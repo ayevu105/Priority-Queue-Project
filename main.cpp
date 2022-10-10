@@ -1,138 +1,109 @@
 /* @file main.cpp
- * @brief The following code fufills the requirments of the Priority Queue Project 
- * where the main driver reads a patients.txt file in and asks the user to input
- * an integer that indicates the amount of vaccines avaiable. The program then 
- * will print out a list of names according to the amount of vaccines available
- * in an order where precondition illnesses and higher ages are prioritized. 
+ * @brief The following code fufills the requirments of the Priority Queue 
+ * Project where the main driver reads a patients.txt file in and asks the user 
+ * to input an integer that indicates the amount of vaccines avaiable. The 
+ * program then will print out a list of names according to the amount of 
+ * vaccines available in an order where precondition illnesses and higher ages 
+ * are prioritized. 
  * @author Anthony Vu
  * @date 10/9/2022
  */
 
-#include <cassert>
-#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <queue>
 #include <stdexcept>
 #include <string>
-#include <tuple>
-#include <vector>
-#include "COVIDPriorityQueue.cpp"
-
-/* testPQ1 writes to the patients.txt file to test new lists of patients
- */
-void testPQ1 () {
-    std::ofstream write ("patients.txt");
-    write << "Name, Age, Precondition Illnesses\n";
-    write << "Jessica, 13, No\n";
-    write << "Robert, 25, Yes\n";
-    write << "James, 90, No\n";
-    write << "Maggie, 80, Yes";
-    write.close();
-}
+#include "COVIDPriorityQueue.h"
 
 /* printPriorityQueue prints out a list of names in prioritizing order
- * @param pq is a priority queue that is a tuple which allows it to take in three elements
+ * @param pq is a priority queue
  * @param input is the users input that was asked in the drivers code
  */
-void printPriorityQueue (std::priority_queue<std::pair<int, std::pair<int, std::string> > > pq, int input)
-{                                                                          
-  for (int i = 0; i < input; i++)
-        {   
-            if(!pq.empty()) 
-            {
-                std::cout << pq.top().second.second << std::endl;
-                pq.pop();
-            }   
-        }
+void printPriorityQueue (std::priority_queue<std::pair<int, std::pair<int, std::string> > > Pq, int Input) {                                                                          
+  for (int i = 0; i < Input; i++) {   
+        if(!Pq.empty()) {
+            std::cout << Pq.top().second.second << std::endl;
+            Pq.pop();
+        }   
+    }
 }
 
 /* isInputValid checks if the users input is a valid integer
  * @param input is the users input that was asked in the drivers code
  */
-int isInputValid (int input)                                                                     
-{
+int isInputValid (int Input) {
     //If the users input is an invalid integer (less/equal to 0) throw and exception
-    if (input <= 0)                                                                            
-    {
+    if (Input <= 0) {
         throw ("User Input must be an integer larger than 0.");
     }
-    return input;
+    return Input;
 }
 
 
 /* Reads the given patients.txt file and pushes them into a queue
  * @param input is the users input that was asked in the drivers code
  */
-void running (int input)
-{
+void running (int Input) {
     //declare of names, age, and precondition as strings since they are in a .txt file
-    std::string name;                                                                        
-    std::string line;                                                                           
-    std::string age;
-    std::string precondition;
+    std::string Name;                                                                        
+    std::string Line;                                                                           
+    std::string Age;
+    std::string Precondition;
 
     //declare convert_precondition and set it equal to 0;
-    int convert_precondition = 0;
-
-    //declare a priority queue with a tuple so that we can compare with three elements
-    // std::priority_queue<std::tuple<int, int, std::string> > pq;     
+    int ConvertPrecondition = 0; 
     
-    std::ifstream in("patients.txt");  
-    std::priority_queue<std::pair<int, std::pair<int, std::string> > > pq;  
+    std::ifstream In("patients.txt");  
+    std::priority_queue<std::pair<int, std::pair<int, std::string> > > Pq;  
     //goes through the patients.txt file line by line
-    while (getline(in, line))                                                               
-    {
+    while (getline(In, Line)) {
         //for each line store a name, age, and precondition into strings in this order
-        in >> name >> age >> precondition;  
+        In >> Name >> Age >> Precondition;  
         
         //remove the trailing commas from the name and age string                                              
-        name.pop_back();                                                                        
-        age.pop_back();
+        Name.pop_back();                                                                        
+        Age.pop_back();
 
         //convert the variable age into an integer for comparison
-        int convert_age = stoi(age);                                                           
+        int ConvertAge = stoi(Age);                                                           
 
-        //converts the string "Yes" into an integer value for comparison, "No" is equal to 0 and "Yes" is equal to 1
-        if (precondition == "Yes")                                                          
-        {
-            convert_precondition = 1;
+        //converts the string "Yes" and "No" into an integer value for comparison, "No" is equal to 0 and "Yes" is equal to 1
+        if (Precondition == "Yes") {
+            ConvertPrecondition = 1;
         }
 
-        if (precondition == "No")                                                          
-        {
-            convert_precondition = 0;
+        if (Precondition == "No") {
+            ConvertPrecondition = 0;
         }
 
-        COVIDPriorityQueue patient = COVIDPriorityQueue(name, convert_age, convert_precondition);
+        //saves the values as members
+        COVIDPriorityQueue Patient = COVIDPriorityQueue(Name, ConvertAge, ConvertPrecondition);
 
-        if (convert_age > 5) 
+        //only if the age of the patients that are above 5 are pushed into the priority queue
+        if (ConvertAge > 5) 
         {
-            pq.push(std::make_pair(patient.precondition, std::make_pair(patient.age, patient.name)));                                                              
+            Pq.push(std::make_pair(Patient.precondition, std::make_pair(Patient.age, Patient.name)));                                                              
         }
     }
-    printPriorityQueue(pq, input);
+    printPriorityQueue(Pq, Input);
 }
 
-int main()
-{   
+int main() {   
     //declaring integer variable for user input
-    int user_input;
+    int UserInput = 0;
+
     std::cout << "How many vaccines are available? ";
-    std::cin >> user_input;
+    std::cin >> UserInput;
 
     // exception handling to see if the users input is a valid integer, if it isnt a message is printed
-    try 
-    {
-        isInputValid(user_input);
+    try {
+        isInputValid(UserInput);
     }
 
-    catch (const char* error)
-    {
-        std::cerr << error << std::endl;
+    catch (const char* Error) {
+        std::cerr << Error << std::endl;
         return 0;
     }
-
-    testPQ1();
-    running(user_input);
+    running(UserInput);
 }

@@ -1,0 +1,245 @@
+Sun Oct  9 21:15:10 PDT 2022
+Linux csslab1 4.18.0-372.26.1.el8_6.x86_64 #1 SMP Tue Sep 13 18:09:48 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+uid=1003642(ayevu105) gid=2121003642(ayevu105) groups=2121003642(ayevu105),605559(lab-access) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+=====================================================
+1. Compiles without warnings with -Wall -Wextra flags
+=====================================================
+=====================================================
+2. Runs and produces correct output
+=====================================================
+How many vaccines are available? User Input must be an integer larger than 0.
+=====================================================
+3. clang-tidy warnings are fixed
+=====================================================
+=====================================================
+4. clang-format does not find any formatting issues
+=====================================================
+Running clang-format on ./main.cpp
+2,7c2,7
+<  * @brief The following code fufills the requirments of the Priority Queue 
+<  * Project where the main driver reads a patients.txt file in and asks the user 
+<  * to input an integer that indicates the amount of vaccines avaiable. The 
+<  * program then will print out a list of names according to the amount of 
+<  * vaccines available in an order where precondition illnesses and higher ages 
+<  * are prioritized. 
+---
+>  * @brief The following code fufills the requirments of the Priority Queue
+>  * Project where the main driver reads a patients.txt file in and asks the user
+>  * to input an integer that indicates the amount of vaccines avaiable. The
+>  * program then will print out a list of names according to the amount of
+>  * vaccines available in an order where precondition illnesses and higher ages
+>  * are prioritized.
+11a12
+> #include "COVIDPriorityQueue.h"
+17d17
+< #include "COVIDPriorityQueue.h"
+23,28c23,29
+< void printPriorityQueue (std::priority_queue<std::pair<int, std::pair<int, std::string> > > Pq, int Input) {                                                                          
+<   for (int i = 0; i < Input; i++) {   
+<         if(!Pq.empty()) {
+<             std::cout << Pq.top().second.second << std::endl;
+<             Pq.pop();
+<         }   
+---
+> void printPriorityQueue(
+>     std::priority_queue<std::pair<int, std::pair<int, std::string>>> Pq,
+>     int Input) {
+>   for (int i = 0; i < Input; i++) {
+>     if (!Pq.empty()) {
+>       std::cout << Pq.top().second.second << std::endl;
+>       Pq.pop();
+29a31
+>   }
+35,40c37,43
+< int isInputValid (int Input) {
+<     //If the users input is an invalid integer (less/equal to 0) throw and exception
+<     if (Input <= 0) {
+<         throw ("User Input must be an integer larger than 0.");
+<     }
+<     return Input;
+---
+> int isInputValid(int Input) {
+>   // If the users input is an invalid integer (less/equal to 0) throw and
+>   // exception
+>   if (Input <= 0) {
+>     throw("User Input must be an integer larger than 0.");
+>   }
+>   return Input;
+43d45
+< 
+47,87c49,78
+< void running (int Input) {
+<     //declare of names, age, and precondition as strings since they are in a .txt file
+<     std::string Name;                                                                        
+<     std::string Line;                                                                           
+<     std::string Age;
+<     std::string Precondition;
+< 
+<     //declare convert_precondition and set it equal to 0;
+<     int ConvertPrecondition = 0; 
+<     
+<     std::ifstream In("patients.txt");  
+<     std::priority_queue<std::pair<int, std::pair<int, std::string> > > Pq;  
+<     //goes through the patients.txt file line by line
+<     while (getline(In, Line)) {
+<         //for each line store a name, age, and precondition into strings in this order
+<         In >> Name >> Age >> Precondition;  
+<         
+<         //remove the trailing commas from the name and age string                                              
+<         Name.pop_back();                                                                        
+<         Age.pop_back();
+< 
+<         //convert the variable age into an integer for comparison
+<         int ConvertAge = stoi(Age);                                                           
+< 
+<         //converts the string "Yes" and "No" into an integer value for comparison, "No" is equal to 0 and "Yes" is equal to 1
+<         if (Precondition == "Yes") {
+<             ConvertPrecondition = 1;
+<         }
+< 
+<         if (Precondition == "No") {
+<             ConvertPrecondition = 0;
+<         }
+< 
+<         //saves the values as members
+<         COVIDPriorityQueue Patient = COVIDPriorityQueue(Name, ConvertAge, ConvertPrecondition);
+< 
+<         //only if the age of the patients that are above 5 are pushed into the priority queue
+<         if (ConvertAge > 5) 
+<         {
+<             Pq.push(std::make_pair(Patient.precondition, std::make_pair(Patient.age, Patient.name)));                                                              
+<         }
+---
+> void running(int Input) {
+>   // declare of names, age, and precondition as strings since they are in a .txt
+>   // file
+>   std::string Name;
+>   std::string Line;
+>   std::string Age;
+>   std::string Precondition;
+> 
+>   // declare convert_precondition and set it equal to 0;
+>   int ConvertPrecondition = 0;
+> 
+>   std::ifstream In("patients.txt");
+>   std::priority_queue<std::pair<int, std::pair<int, std::string>>> Pq;
+>   // goes through the patients.txt file line by line
+>   while (getline(In, Line)) {
+>     // for each line store a name, age, and precondition into strings in this
+>     // order
+>     In >> Name >> Age >> Precondition;
+> 
+>     // remove the trailing commas from the name and age string
+>     Name.pop_back();
+>     Age.pop_back();
+> 
+>     // convert the variable age into an integer for comparison
+>     int ConvertAge = stoi(Age);
+> 
+>     // converts the string "Yes" and "No" into an integer value for comparison,
+>     // "No" is equal to 0 and "Yes" is equal to 1
+>     if (Precondition == "Yes") {
+>       ConvertPrecondition = 1;
+89,90d79
+<     printPriorityQueue(Pq, Input);
+< }
+92,101c81,82
+< int main() {   
+<     //declaring integer variable for user input
+<     int UserInput = 0;
+< 
+<     std::cout << "How many vaccines are available? ";
+<     std::cin >> UserInput;
+< 
+<     // exception handling to see if the users input is a valid integer, if it isnt a message is printed
+<     try {
+<         isInputValid(UserInput);
+---
+>     if (Precondition == "No") {
+>       ConvertPrecondition = 0;
+104,106c85,93
+<     catch (const char* Error) {
+<         std::cerr << Error << std::endl;
+<         return 0;
+---
+>     // saves the values as members
+>     COVIDPriorityQueue Patient =
+>         COVIDPriorityQueue(Name, ConvertAge, ConvertPrecondition);
+> 
+>     // only if the age of the patients that are above 5 are pushed into the
+>     // priority queue
+>     if (ConvertAge > 5) {
+>       Pq.push(std::make_pair(Patient.precondition,
+>                              std::make_pair(Patient.age, Patient.name)));
+108c95,116
+<     running(UserInput);
+---
+>   }
+>   printPriorityQueue(Pq, Input);
+> }
+> 
+> int main() {
+>   // declaring integer variable for user input
+>   int UserInput = 0;
+> 
+>   std::cout << "How many vaccines are available? ";
+>   std::cin >> UserInput;
+> 
+>   // exception handling to see if the users input is a valid integer, if it isnt
+>   // a message is printed
+>   try {
+>     isInputValid(UserInput);
+>   }
+> 
+>   catch (const char *Error) {
+>     std::cerr << Error << std::endl;
+>     return 0;
+>   }
+>   running(UserInput);
+=====================================================
+5. No memory leaks using g++
+=====================================================
+=====================================================
+6. No memory leaks using valgrind, look for "definitely lost" 
+=====================================================
+==1611003== Memcheck, a memory error detector
+==1611003== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1611003== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1611003== Command: ./a.out
+==1611003== Parent PID: 1610955
+==1611003== 
+==1611003== 
+==1611003== HEAP SUMMARY:
+==1611003==     in use at exit: 0 bytes in 0 blocks
+==1611003==   total heap usage: 10 allocs, 10 frees, 87,066 bytes allocated
+==1611003== 
+==1611003== All heap blocks were freed -- no leaks are possible
+==1611003== 
+==1611003== For lists of detected and suppressed errors, rerun with: -s
+==1611003== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+=====================================================
+7. Tests have full code coverage
+=====================================================
+File '/home/NETID/ayevu105/Priority-Queue-Project/main.cpp':
+Name                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Regions    Miss   Cover     Lines    Miss   Cover  Branches    Miss   Cover
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+printPriorityQueue(std::priority_queue<std::pair<int, std::pair<int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::vector<std::pair<int, std::pair<int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::allocator<std::pair<int, std::pair<int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > >, std::less<std::pair<int, std::pair<int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > >, int)         6       0 100.00%         8       0 100.00%         4       1  75.00%
+isInputValid(int)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            4       1  75.00%         6       2  66.67%         2       1  50.00%
+running(int)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 9       0 100.00%        27       0 100.00%         8       1  87.50%
+main                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         4       1  75.00%        13       3  76.92%         0       0   0.00%
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       23       2  91.30%        54       5  90.74%        14       3  78.57%
+=====================================================
+The lines below were never executed
+=====================================================
+   38|      0|        throw ("User Input must be an integer larger than 0.");
+   39|      0|    }
+  105|      0|        std::cerr << Error << std::endl;
+  106|      0|        return 0;
+  107|      0|    }
+Sun Oct  9 21:15:38 PDT 2022
+=====================================================
+To create an output.txt file with all the output from this script
+Run the below command
+      ./create-output.sh > output.txt 2>&1 
+=====================================================
