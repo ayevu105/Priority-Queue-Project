@@ -1,0 +1,5 @@
+Name, Age, Precondition Illnesses
+Jessica, 13, No
+Robert, 25, Yes
+James, 90, No
+Maggie, 80, Yes
